@@ -1,75 +1,132 @@
-<img alt="Drupal Logo" src="https://www.drupal.org/files/Wordmark_blue_RGB.png" height="60px">
+## Overview
+The Event Management module is a custom Drupal module that enables administrators to create, manage, and view events within the Drupal site. It features a configuration form to control the display of events and logs configuration changes. The module defines custom database tables to store event data and track changes.
 
-Drupal is an open source content management platform supporting a variety of
-websites ranging from personal weblogs to large community-driven websites. For
-more information, visit the Drupal website, [Drupal.org][Drupal.org], and join
-the [Drupal community][Drupal community].
+## Features
+Create, Edit, and View Events: Manage events with attributes such as title, image, description, start and end times, and category.
+Custom Database Tables: The module creates event and event_management_log tables to store event data and log configuration changes.
+Configuration Form: A settings page for customizing options like showing past events and setting the number of events per page.
+Logging: Logs configuration changes to track user actions.
+User-Friendly Admin Interface: Provides routes for event creation, event listing, and event details.
 
-## Contributing
+## Prerequisites
+Drupal 9.x or 10.x installed and running.
+Access to a command-line interface (CLI) with Drush installed.
+Proper permissions to manage modules and edit settings.php.
+Docker installed and set up for your Drupal environment.
+### Installation Guide
 
-Drupal is developed on [Drupal.org][Drupal.org], the home of the international
-Drupal community since 2001!
+Step 1: Clone the Module
+Navigate to your Drupal project's modules/custom directory and clone the repository:
 
-[Drupal.org][Drupal.org] hosts Drupal's [GitLab repository][GitLab repository],
-its [issue queue][issue queue], and its [documentation][documentation]. Before
-you start working on code, be sure to search the [issue queue][issue queue] and
-create an issue if your aren't able to find an existing issue.
+```bash
 
-Every issue on Drupal.org automatically creates a new community-accessible fork
-that you can contribute to. Learn more about the code contribution process on
-the [Issue forks & merge requests page][issue forks].
+cd /path/to/drupal/root/modules/custom/
+git clone https://github.com/your-repo/event_management.git
 
-## Usage
+```
 
-For a brief introduction, see [USAGE.txt](/core/USAGE.txt). You can also find
-guides, API references, and more by visiting Drupal's [documentation
-page][documentation].
+Step 2: Access Your Drupal Container
+Run commands inside the Docker container where your Drupal application is installed:
 
-You can quickly extend Drupal's core feature set by installing any of its
-[thousands of free and open source modules][modules]. With Drupal and its
-module ecosystem, you can often build most or all of what your project needs
-before writing a single line of code.
+```bash
 
-## Changelog
+docker exec -it drupal /bin/bash
+```
 
-Drupal keeps detailed [change records][changelog]. You can search Drupal's
-changes for a record of every notable breaking change and new feature since
-2011.
+Step 3: Enable the Module
+Use Drush inside the Docker container to enable the module:
 
-## Security
+```bash
 
-For a list of security announcements, see the [Security advisories
-page][Security advisories] (available as [an RSS feed][security RSS]). This
-page also describes how to subscribe to these announcements via email.
+drush en event_management -y
+```
 
-For information about the Drupal security process, or to find out how to report
-a potential security issue to the Drupal security team, see the [Security team
-page][security team].
+Step 4: Install Module Dependencies
+Ensure that required dependencies are installed by running Composer inside the container:
 
-## Need a helping hand?
+```bash
 
-Visit the [Support page][support] or browse [over a thousand Drupal
-providers][service providers] offering design, strategy, development, and
-hosting services.
+composer install
+```
 
-## Legal matters
+Step 5: Clear Drupal Cache
+Clear Drupal's cache to ensure that all routes, configurations, and services are recognized:
 
-Know your rights when using Drupal by reading Drupal core's
-[license](/core/LICENSE.txt).
+```bash
 
-Learn about the [Drupal trademark and logo policy here][trademark].
+drush cr
+```
 
-[Drupal.org]: https://www.drupal.org
-[Drupal community]: https://www.drupal.org/community
-[GitLab repository]: https://git.drupalcode.org/project/drupal
-[issue queue]: https://www.drupal.org/project/issues/drupal
-[issue forks]: https://www.drupal.org/drupalorg/docs/gitlab-integration/issue-forks-merge-requests
-[documentation]: https://www.drupal.org/documentation
-[changelog]: https://www.drupal.org/list-changes/drupal
-[modules]: https://www.drupal.org/project/project_module
-[security advisories]: https://www.drupal.org/security
-[security RSS]: https://www.drupal.org/security/rss.xml
-[security team]: https://www.drupal.org/drupal-security-team
-[service providers]: https://www.drupal.org/drupal-services
-[support]: https://www.drupal.org/support
-[trademark]: https://www.drupal.com/trademark
+
+Step 6: Verify Module Installation
+Check the Reports > Status report page in the Drupal admin interface to confirm the module is installed and functioning correctly. You can also use Drush:
+
+```bash
+
+drush status
+```
+
+Step 7: Access Module Features
+Event Management Settings: Visit /admin/config/event-management to access the configuration page.
+Create an Event: Go to /admin/events/create to add a new event.
+List Events: Visit /admin/events/list to view a list of all events.
+View Event Details: Use /admin/events/{event_id} to view details of a specific event, replacing {event_id} with the actual event ID.
+Configuration
+Accessing the Settings Page
+Navigate to Configuration > Event Management or visit /admin/config/event-management to update the module settings.
+
+Available Configuration Options
+Show Past Events: Toggle to display or hide past events.
+Number of Events Per Page: Specify the number of events displayed on the event listing page.
+Log Changes: Enable or disable logging of configuration changes.
+Module Structure
+
+```bash
+event_management/
+├── event_management.info.yml
+├── event_management.install
+├── event_management.routing.yml
+├── README.md
+├── src/
+│   ├── Controller/
+│   │   └── EventController.php
+│   ├── Form/
+│   │   └── SettingsForm.php
+│   └── Plugin/
+│       └── Block/
+│           └── LatestEventsBlock.php
+└── templates/
+    ├── event-listing-page.html.twig
+    └── event-detail.html.twig
+```
+
+Explanation of Files
+event_management.info.yml: Defines the module's metadata.
+event_management.install: Handles database table creation and default configurations.
+event_management.routing.yml: Defines routes for the module.
+src/Controller/EventController.php: Contains logic for handling event creation, listing, and viewing.
+src/Form/SettingsForm.php: Provides the configuration form logic.
+templates/: Contains Twig templates for rendering event listings and details.
+### Troubleshooting
+Common Issues
+Module Routes Not Found:
+
+Clear the cache: drush cr.
+Ensure the module is enabled: drush pm:list --status=enabled | grep event_management.
+Verify the structure of event_management.routing.yml.
+Database Tables Not Created:
+
+Uninstall and reinstall the module to trigger hook_install():
+```bash
+drush pm:uninstall event_management -y
+drush en event_management -y
+```
+Permissions:
+
+Make sure your user role has the "administer site configuration" permission.
+Trusted Host Patterns Warning:
+
+Ensure that the trusted_host_patterns configuration in settings.php is correct.
+Security Best Practices
+Ensure the trusted_host_patterns setting is configured to prevent HTTP HOST header attacks.
+Regularly update Drupal core and all contributed modules to the latest versions to avoid security vulnerabilities.
