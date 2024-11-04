@@ -1,0 +1,247 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the event_management module.
+ */
+
+function event_management_schema() {
+  $schema['event_management_log'] = [
+    'description' => 'Logs changes to the event management configuration.',
+    'fields' => [
+      'id' => [
+        'description' => 'The unique identifier for each log entry.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'timestamp' => [
+        'description' => 'The timestamp when the log entry was created.',
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+      'operation' => [
+        'description' => 'The type of operation performed (e.g., "create", "update", "delete").',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'user' => [
+        'description' => 'The ID of the user who performed the operation.',
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => FALSE,
+      ],
+      'details' => [
+        'description' => 'Additional details about the operation.',
+        'type' => 'text',
+        'not null' => FALSE,
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
+
+  $schema['event'] = [
+    'description' => 'Stores event information.',
+    'fields' => [
+      'id' => [
+        'description' => 'The primary identifier for the event.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'title' => [
+        'description' => 'The title of the event.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'image' => [
+        'description' => 'The image associated with the event.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'description' => [
+        'description' => 'The description of the event.',
+        'type' => 'text',
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'start_time' => [
+        'description' => 'The start time of the event.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'end_time' => [
+        'description' => 'The end time of the event.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'category' => [
+        'description' => 'The category of the event.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'published' => [
+        'description' => 'Whether the event is published.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'default' => 1,
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'title' => ['title'],
+    ],
+    'foreign keys' => [],
+  ];
+
+
+  return $schema;
+}
+/**
+ * Implements hook_install().
+ */
+function event_management_install() {
+
+  // Set default configuration.
+  \Drupal::configFactory()->getEditable('event_management.settings')
+    ->set('show_past_events', TRUE)
+    ->set('events_per_page', 10)
+    ->set('log_changes', TRUE)
+    ->save();
+
+  \Drupal::logger('event_management')->notice('event_management_install() was triggered.');
+
+  // Create the event_management_log and event schema
+  $schema['event_management_log'] = [
+    'description' => 'Logs changes to the event management configuration.',
+    'fields' => [
+      'id' => [
+        'description' => 'The unique identifier for each log entry.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'timestamp' => [
+        'description' => 'The timestamp when the log entry was created.',
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => TRUE,
+      ],
+      'operation' => [
+        'description' => 'The type of operation performed (e.g., "create", "update", "delete").',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'user' => [
+        'description' => 'The ID of the user who performed the operation.',
+        'type' => 'int',
+        'size' => 'big',
+        'not null' => FALSE,
+      ],
+      'details' => [
+        'description' => 'Additional details about the operation.',
+        'type' => 'text',
+        'not null' => FALSE,
+      ],
+    ],
+    'primary key' => ['id'],
+  ];
+
+  $schema['event'] = [
+    'description' => 'Stores event information.',
+    'fields' => [
+      'id' => [
+        'description' => 'The primary identifier for the event.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ],
+      'title' => [
+        'description' => 'The title of the event.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+      'image' => [
+        'description' => 'The image associated with the event.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'description' => [
+        'description' => 'The description of the event.',
+        'type' => 'text',
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'start_time' => [
+        'description' => 'The start time of the event.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'end_time' => [
+        'description' => 'The end time of the event.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ],
+      'category' => [
+        'description' => 'The category of the event.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'default' => NULL,
+      ],
+      'published' => [
+        'description' => 'Whether the event is published.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'default' => 1,
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'title' => ['title'],
+    ],
+    'foreign keys' => [],
+  ];
+
+  logger('event_management')->log(RfcLogLevel::NOTICE, 'Table events_management_config_log created.');
+
+  // Check if the tables already exists, and if so, drop it.
+  if (\Drupal::database()->schema()->tableExists('event_management_log')) {
+    \Drupal::database()->schema()->dropTable('event_management_log');
+  }
+  if (\Drupal::database()->schema()->tableExists('event')) {
+    \Drupal::database()->schema()->dropTable('event');
+  }
+  // Create the tables.
+  \Drupal::database()->schema()->createTable('event_management_log', $schema['event_management_log']);
+  \Drupal::database()->schema()->createTable('event', $schema['event']);
+}
+/**
+ * Implements hook_uninstall().
+ */
+function event_management_uninstall() {
+ 
+
+  // Drop the event_management_log and event tables when the module is uninstalled.
+  if (\Drupal::database()->schema()->tableExists('event_management_log')) {
+    \Drupal::database()->schema()->dropTable('event_management_log');
+  }
+  if (\Drupal::database()->schema()->tableExists('event')) {
+    \Drupal::database()->schema()->dropTable('event');
+  }
+  
+  // Remove configuration settings.
+  \Drupal::configFactory()->getEditable('event_management.settings')->delete();
+
+}
+
+
+
+  

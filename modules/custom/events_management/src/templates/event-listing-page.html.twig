@@ -1,0 +1,15 @@
+<h1>{{ title }}</h1>
+{% if events %}
+  <ul>
+    {% for event in events %}
+      <li>
+        <h2><a href="{{ event.url }}">{{ event.title }}</a></h2>
+        <p>{{ event.description }}</p>
+        <p><strong>Start:</strong> {{ event.start_time }}</p>
+        <p><strong>End:</strong> {{ event.end_time }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>{{ 'No events available.'|t }}</p>
+{% endif %}

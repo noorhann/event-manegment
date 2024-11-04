@@ -1,0 +1,15 @@
+<article class="event-detail">
+  <h1>{{ event.title }}</h1>
+  <div class="event-description">
+    <p>{{ event.description }}</p>
+  </div>
+  <div class="event-time">
+    <p><strong>Start Time:</strong> {{ event.start_time }}</p>
+    <p><strong>End Time:</strong> {{ event.end_time }}</p>
+  </div>
+  {% if event.image %}
+    <div class="event-image">
+      {{ event.image }}
+    </div>
+  {% endif %}
+</article>

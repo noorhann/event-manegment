@@ -1,0 +1,38 @@
+services:
+  drupal:
+    image: drupal:10
+    container_name: drupal
+    ports:
+      - "8080:80"
+    volumes:
+      - /c/xampp/htdocs/EventManegment/modules/custom:/opt/drupal/web/modules/custom
+    environment:
+      - DRUPAL_DATABASE_HOST=db
+      - DRUPAL_DATABASE_NAME=drupal
+      - DRUPAL_DATABASE_USER=drupal
+      - DRUPAL_DATABASE_PASSWORD=drupal
+    depends_on:
+      - db
+      - php
+
+  db:
+    image: mysql:8.0
+    container_name: drupal_db
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: drupal
+
+  php:
+    image: php:8.3-apache
+    container_name: php
+    volumes:
+      - ./drupal:/var/www/html
+    ports:
+      - "8081:80"
+
+volumes:
+  db_data:

@@ -1,0 +1,32 @@
+
+event_management.settings:
+  path: '/admin/config/event-management'
+  defaults:
+    _form: '\Drupal\event_management\Form\SettingsForm'
+    _title: 'Event Management Settings'
+  requirements:
+    _permission: 'administer site configuration'
+
+event_management.event_create:
+  path: '/admin/events/create'
+  defaults:
+    _controller: '\Drupal\event_management\Controller\EventController::createEvent'
+    _title: 'Create Event'
+
+event_management.event_list:
+  path: '/admin/events/list'
+  defaults:
+    _controller: '\Drupal\event_management\Controller\EventController::listEvents'
+    _title: 'Event List'
+  requirements:
+    _permission: 'administer site configuration'
+
+event_management.event_view:
+  path: '/admin/events/{event}'
+  defaults:
+    _controller: '\Drupal\event_management\Controller\EventController::viewEvent'
+    _title: 'Event View'
+  requirements:
+    _permission: 'administer site configuration'
+    event: \d+
+
